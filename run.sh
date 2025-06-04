@@ -6,7 +6,7 @@
 DATA_DIR=/home/xieyi/data
 OUTPUT_DIR=/home/xieyi/output
 ENV_PATH=/home/xieyi/anaconda3/envs/af3
-INPUT_PATH=/home/xieyi/data/uniprot/uniprot.fasta
+INPUT_PATH=/home/xieyi/short.fasta
 
 python3 run_alphafold.py \
   --fasta_paths=${INPUT_PATH} \
@@ -15,11 +15,11 @@ python3 run_alphafold.py \
   --db_preset=reduced_dbs \
   --data_dir=${DATA_DIR} \
   --output_dir=${OUTPUT_DIR} \
-  --benchmark=false \
-  --use_precomputed_msas=false \
+  --benchmark=False \
+  --use_precomputed_msas=False \
   --num_multimer_predictions_per_model=5 \
   --models_to_relax=best \
-  --use_gpu_relax=true \
+  --use_gpu_relax=True \
   --uniref90_database_path=${DATA_DIR}/uniref90/uniref90.fasta \
   --mgnify_database_path=${DATA_DIR}/mgnify/mgy_clusters_2022_05.fa \
   --template_mmcif_dir=${DATA_DIR}/pdb_mmcif/mmcif_files \
