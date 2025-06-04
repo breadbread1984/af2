@@ -6,9 +6,10 @@
 DATA_DIR=/home/xieyi/data
 OUTPUT_DIR=/home/xieyi/output
 ENV_PATH=/home/xieyi/anaconda3/envs/af3
+INPUT_PATH=/home/xieyi/data/uniprot/uniprot.fasta
 
 python3 run_alphafold.py \
-  --fasta_paths=T1050.fasta \
+  --fasta_paths=${INPUT_PATH} \
   --max_template_date=2020-05-14 \
   --model_preset=monomer \
   --db_preset=reduced_dbs \
