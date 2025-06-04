@@ -11,5 +11,7 @@ INPUT_PATH=/home/xieyi/short.fasta
 python3 docker/run_docker.py \
   --fasta_paths=${INPUT_PATH} \
   --max_template_date=2020-05-14 \
+  --model_preset=monomer \
+  --db_preset=reduced_dbs \
   --data_dir=${DATA_DIR} \
   --output_dir=${OUTPUT_DIR}
