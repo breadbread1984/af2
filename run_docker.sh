@@ -6,7 +6,7 @@
 DATA_DIR=/home/xieyi/data
 OUTPUT_DIR=/home/xieyi/output
 ENV_PATH=/home/xieyi/anaconda3/envs/af3
-INPUT_PATH=/home/xieyi/short.fasta
+INPUT_PATH=/home/xieyi/alphafold/test_inputs/test.fasta
 
 python3 docker/run_docker.py \
   --fasta_paths=${INPUT_PATH} \

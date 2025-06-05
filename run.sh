@@ -6,7 +6,7 @@
 DATA_DIR=/home/xieyi/data
 OUTPUT_DIR=/home/xieyi/output
 ENV_PATH=/home/xieyi/anaconda3/envs/af3
-INPUT_PATH=/home/xieyi/short.fasta
+INPUT_PATH=/home/xieyi/alphafold/test_inputs/short.fasta
 
 python3 run_alphafold.py \
   --fasta_paths=${INPUT_PATH} \
