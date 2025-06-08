@@ -231,7 +231,7 @@ def main(argv):
 
   client = docker.from_env()
   device_requests = [
-      docker.types.DeviceRequest(device_ids = ["all"], capabilities=[['gpu']])
+      docker.types.DeviceRequest(device_ids = [FLAGS.gpu_devices], capabilities=[['gpu']])
   ] if FLAGS.use_gpu else None
 
   container = client.containers.run(
@@ -243,7 +243,6 @@ def main(argv):
       mounts=mounts,
       user=FLAGS.docker_user,
       environment={
-          'NVIDIA_VISIBLE_DEVICES': FLAGS.gpu_devices,
           # The following flags allow us to make predictions on proteins that
           # would typically be too long to fit into GPU memory.
           'TF_FORCE_UNIFIED_MEMORY': '1',
