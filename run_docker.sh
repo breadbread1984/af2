@@ -14,4 +14,6 @@ python3 docker/run_docker.py \
   --model_preset=monomer \
   --db_preset=reduced_dbs \
   --data_dir=${DATA_DIR} \
-  --output_dir=${OUTPUT_DIR}
+  --output_dir=${OUTPUT_DIR} \
+  --use_gpu \
+  --enable_gpu_relax
