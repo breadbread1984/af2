@@ -3,6 +3,7 @@
 from absl import flags, app
 from datetime import datetime
 import threading
+import subprocess
 import time
 import gradio as gr
 
@@ -39,7 +40,14 @@ class AlphaFoldManager(object):
     if self.status[gpu_id] != 'idle':
       return False, f"GPU {gpu_id} is busy, status: {self.status[gpu_id]}"
     try:
-      
+      process = subprocess.Popen(
+        [
+          'python3',
+          'docker/run_docker.py',
+          f'--fasta_paths={fasta_path}',
+          '',
+        ]
+      )
 
 def main(unused_argv):
   
