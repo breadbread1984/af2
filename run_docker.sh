@@ -16,6 +16,7 @@ python3 docker/run_docker.py \
   --data_dir=${DATA_DIR} \
   --output_dir=${OUTPUT_DIR} \
   --use_gpu \
+  --model_preset=multimer \
   --enable_gpu_relax \
   --models_to_relax=all \
   --gpu_devices=all
