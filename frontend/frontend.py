@@ -6,6 +6,7 @@ import threading
 import subprocess
 import time
 import gradio as gr
+import configs
 
 FLAGS = flags.FLAGS
 
@@ -46,9 +47,14 @@ class AlphaFoldManager(object):
           'docker/run_docker.py',
           f'--fasta_paths={fasta_path}',
           '--max_template_date=2020-05-14',
-          '--model_preset=monomer',
+          '--model_preset=multimer',
           '--db_preset=reduced_dbs',
-          '--data_dir='
+          f'--data_dir={configs.data_dir}',
+          f'--output_dir={join(configs.output_dir, str(gpu_id))}',
+          '--use_gpu',
+          '--enable_gpu_relax',
+          '--models_to_relax=none',
+          f'--gpu_devices={gpu_id}',
         ]
       )
 
