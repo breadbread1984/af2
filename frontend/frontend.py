@@ -45,7 +45,10 @@ class AlphaFoldManager(object):
           'python3',
           'docker/run_docker.py',
           f'--fasta_paths={fasta_path}',
-          '',
+          '--max_template_date=2020-05-14',
+          '--model_preset=monomer',
+          '--db_preset=reduced_dbs',
+          '--data_dir='
         ]
       )
 
