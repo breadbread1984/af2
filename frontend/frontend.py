@@ -57,6 +57,24 @@ class AlphaFoldManager(object):
           f'--gpu_devices={gpu_id}',
         ]
       )
+      with self.lock:
+        self.process[gpu_id] = process
+        self.status[gpu_id] = 'running'
+        self.logs[gpu_id].append(f"{datetime.now()}: start new AlphaFold task")
+      threading.Thread(target = self._collect_logs, args = (gpu_id, process), daemon = True).start()
+      return True, f"started task on GPU {gpu_id}, output directory: {join(configs.output_dir, str(gpu_id))}"
+    except Exception as e:
+      return False, f"failed to start AlphaFold: {str(e)}"
+  def _collect_logs(self, gpu_id, process):
+    for line in process.stdout:
+      with self.lock:
+        self.logs[gpu_id].append(f"{datetime.now()}: {line.strip()}")
+  def get_gpu_status(self):
+    return {gpu_id: self.status[gpu_id] for gpu_id in self.status}
+  def get_gpu_logs(self, gpu_id):
+    if gpu_id in self.logs:
+      return '\n'.join(self.logs[gpu_id])
+    return "no log"
 
 def main(unused_argv):
   
