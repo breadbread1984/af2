@@ -17,5 +17,5 @@ python3 docker/run_docker.py \
   --output_dir=${OUTPUT_DIR} \
   --use_gpu \
   --enable_gpu_relax \
-  --models_to_relax=all \
+  --models_to_relax=none \
   --gpu_devices=all
