@@ -100,7 +100,6 @@ def create_interface(manager):
                   value = f"status: intializing",
                   interactive = False
                 )
-            refresh_btn = gr.Button("refresh status")
 
         with gr.Tab('gpu logs') as gpu_logs_tab:
           with gr.Column():
@@ -111,7 +110,6 @@ def create_interface(manager):
               value = list(manager.logs.keys())[0] if len(manager.logs) else None
             )
             logs_output = gr.Textbox(label = 'logs', lines = 10, interactive = False)
-            get_logs_btn = gr.Button("get log")
 
       with gr.Column(scale = 2):
         with gr.Tab('submit') as submit_tab:
@@ -175,20 +173,10 @@ def create_interface(manager):
       )
       update_status()
       return message
-    refresh_btn.click(
-      update_status,
-      inputs = [],
-      outputs = list(gpu_status_outputs.values())
-    )
     gpu_status_tab.select(
       update_status,
       inputs = [],
       outputs = list(gpu_status_outputs.values())
-    )
-    get_logs_btn.click(
-      update_logs,
-      inputs = [gpu_id_input],
-      outputs = [logs_output]
     )
     gpu_logs_tab.select(
       update_logs,
