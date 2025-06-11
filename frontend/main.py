@@ -153,7 +153,7 @@ def create_interface(manager):
               label = 'GPU selection',
               value = list(manager.processes.keys())[0] if len(manager.processes) else None
             )
-            results = gr.Dataframe(interactive = False)
+            results = gr.Dataframe(headers = ['rank', 'name'], datatype = ['str', 'html'], interactive = False)
     # 2) callbacks
     def update_status():
       status_dict = manager.get_gpu_status()
@@ -192,7 +192,7 @@ def create_interface(manager):
         res = re.match(pattern, stem)
         if res is None: continue
         ranks.append(res[1])
-        names.append(f'<a href="localhost:8081?path={join(output_dir, f)}" target="_blank">stem</a>')
+        names.append(f'<a href="localhost:8081?path={join(output_dir, f)}" target="_blank">{stem}</a>')
       return pd.DataFrame({'rank': ranks, 'name': names})
     # 3) events
     gpu_status_tab.select(
