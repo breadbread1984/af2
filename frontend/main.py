@@ -183,6 +183,11 @@ def create_interface(manager):
       inputs = [gpu_id_input],
       outputs = [logs_output]
     )
+    gpu_id_input.change(
+      update_logs,
+      inputs = [gpu_id_input],
+      outputs = [logs_output]
+    )
     submit_btn.click(
       run_prediction,
       inputs = [gpu_selector, fasta_file, model_preset, models_to_relax, max_template_date],
