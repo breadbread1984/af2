@@ -176,7 +176,8 @@ def create_interface(manager):
     )
     submit_btn.click(
       run_prediction,
-      inputs = [gpu_selector, fasta_file, model_preset, models_to_relax, max_template_date]
+      inputs = [gpu_selector, fasta_file, model_preset, models_to_relax, max_template_date],
+      outputs = [status_output]
     )
     interface.load(
       update_status,
