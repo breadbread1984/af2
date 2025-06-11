@@ -49,7 +49,7 @@ class AlphaFoldManager(object):
           'docker/run_docker.py',
           f'--fasta_paths={fasta_path}',
           f'--max_template_date={max_template_date}',
-          '--model_preset={model_preset}',
+          f'--model_preset={model_preset}',
           '--db_preset=reduced_dbs',
           f'--data_dir={configs.data_dir}',
           f'--output_dir={join(configs.output_dir, str(gpu_id))}',
