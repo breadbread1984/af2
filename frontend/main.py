@@ -48,14 +48,14 @@ class AlphaFoldManager(object):
           'python3',
           'docker/run_docker.py',
           f'--fasta_paths={fasta_path}',
-          '--max_template_date={max_template_date}',
+          f'--max_template_date={max_template_date}',
           '--model_preset={model_preset}',
           '--db_preset=reduced_dbs',
           f'--data_dir={configs.data_dir}',
           f'--output_dir={join(configs.output_dir, str(gpu_id))}',
           '--use_gpu',
           '--enable_gpu_relax',
-          '--models_to_relax={models_to_relax}',
+          f'--models_to_relax={models_to_relax}',
           f'--gpu_devices={gpu_id}',
         ]
       )
