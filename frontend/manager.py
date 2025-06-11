@@ -153,7 +153,7 @@ def create_interface(manager):
               label = 'GPU selection',
               value = list(manager.processes.keys())[0] if len(manager.processes) else None
             )
-            results = gr.Dataframe(headers = ['rank', 'name'], datatype = ['str', 'html'], interactive = False)
+            results = gr.Dataframe(headers = ['rank', 'name(click to view)'], datatype = ['str', 'html'], interactive = False)
     # 2) callbacks
     def update_status():
       status_dict = manager.get_gpu_status()
@@ -237,7 +237,7 @@ def main(unused_argv):
   interface = create_interface(manager)
   interface.launch(
     server_name = configs.service_host,
-    server_port = configs.service_port,
+    server_port = configs.manager_service_port,
     share = True
   )
 
