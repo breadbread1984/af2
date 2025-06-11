@@ -60,7 +60,7 @@ class AlphaFoldManager(object):
         ]
       )
       with self.lock:
-        self.process[gpu_id] = process
+        self.processes[gpu_id] = process
         self.status[gpu_id] = 'running'
         self.logs[gpu_id].append(f"{datetime.now()}: start new AlphaFold task")
       threading.Thread(target = self._collect_logs, args = (gpu_id, process), daemon = True).start()
@@ -147,7 +147,7 @@ def create_interface(manager):
       import tempfile
       temp_dir = tempfile.mkdtemp()
       fasta_path = join(temp_dir, "input.fasta")
-      with open(fasta_file.name, 'r') as ifs
+      with open(fasta_file.name, 'r') as ifs:
         with open(fasta_path, 'w') as ofs:
           ofs.write(ifs.read())
       success, message = manager.run_alphafold(
