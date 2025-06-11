@@ -2,8 +2,10 @@
 
 from absl import flags, app
 from shutil import rmtree
-from os import makedirs
-from os.path import join, exists
+from os import makedirs, listdir
+from os.path import join, exists, splitext
+import re
+import pandas as pd
 from datetime import datetime
 import threading
 import subprocess
@@ -85,6 +87,7 @@ class AlphaFoldManager(object):
 
 def create_interface(manager):
   with gr.Blocks(title = "AlphaFold2 manager") as interface:
+    # 1) interface
     gr.Markdown("# AlphaFold manager tools")
     with gr.Row():
       with gr.Column(scale = 1):
@@ -145,8 +148,13 @@ def create_interface(manager):
         with gr.Tab('view') as view_tab:
           with gr.Column():
             gr.Markdown('### Prediction Viewer')
-
-
+            view_gpu_selector = gr.Dropdown(
+              choices = list(manager.processes.keys()),
+              label = 'GPU selection',
+              value = list(manager.processes.keys())[0] if len(manager.processes) else None
+            )
+            results = gr.Dataframe(interactive = False)
+    # 2) callbacks
     def update_status():
       status_dict = manager.get_gpu_status()
       return {
@@ -173,6 +181,20 @@ def create_interface(manager):
       )
       update_status()
       return message
+    def list_results(gpu_id):
+      pattern = r"ranked_([0-9]{1,}+)"
+      output_dir = join(configs.output_dir, str(gpu_id), 'input')
+      ranks = list()
+      names = list()
+      for f in listdir(output_dir):
+        stem, ext = splitext(f)
+        if ext != '.pdb': continue
+        res = re.match(pattern, stem)
+        if res is None: continue
+        ranks.append(res[1])
+        names.append(f'<a href="localhost:8081?path={join(output_dir, f)}" target="_blank">stem</a>')
+      return pd.DataFrame({'rank': ranks, 'name': names})
+    # 3) events
     gpu_status_tab.select(
       update_status,
       inputs = [],
@@ -192,6 +214,16 @@ def create_interface(manager):
       run_prediction,
       inputs = [gpu_selector, fasta_file, model_preset, models_to_relax, max_template_date],
       outputs = [status_output]
+    )
+    view_tab.select(
+      list_results,
+      inputs = [view_gpu_selector],
+      outputs = [results]
+    )
+    view_gpu_selector.change(
+      list_results,
+      inputs = [view_gpu_selector],
+      outputs = [results]
     )
     interface.load(
       update_status,
