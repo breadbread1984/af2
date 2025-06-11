@@ -131,5 +131,51 @@ def create_interface(manager):
         submit_btn = gr.Button('submit prediction')
         status_output = gr.Textbox(label = 'submit status', interactive = False)
 
+    def update_status():
+      status_dict = manager.get_gpu_status()
+      return {
+        gpu_status_outputs[gpu_id]: gr.update(value = f"stats: {status}")
+        for gpu_id, status in status_dict.items()
+      }
+    def update_logs(gpu_id):
+      return manager.get_gpu_logs(gpu_id)
+    def run_prediction(gpu_id, fasta_path,  model_preset, models_to_relax, max_template_date):
+      if fasta_file is None:
+        return "error: please upload fasta file"
+      import tempfile
+      temp_dir = tempfile.mkdtemp()
+      fasta_path = os.path.join(temp_dir, "input.fasta")
+      with open(fasta_path, 'wb') as f:
+        f.write(fasta_file.read())
+      success, message = manager.run_alphafold(
+        gpu_id = int(gpu_id),
+        fasta_path = fasta_path,
+        model_preset = model_preset,
+        models_to_relax = models_to_relax,
+        max_template_date = max_template_date
+      )
+      update_status()
+      return message
+    refresh_btn.click(
+      update_status,
+      inputs = [],
+      outputs = list(gpu_status_outputs.values())
+    )
+    get_logs_btn.click(
+      update_logs,
+      inputs = [gpu_id_inputs],
+      outputs = [logs_output]
+    )
+    submit_btn.click(
+      run_prediction,
+      inputs = [gpu_selector, fasta_file, model_preset, models_to_relax, max_template_date]
+    )
+    interface.load(
+      update_status,
+      inputs = None,
+      outputs = list(gpu_status_outputs.values())
+    )
+  return interface
+
 def main(unused_argv):
   
