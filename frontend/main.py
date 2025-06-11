@@ -164,7 +164,7 @@ def create_interface(manager):
     )
     get_logs_btn.click(
       update_logs,
-      inputs = [gpu_id],
+      inputs = [gpu_id_input],
       outputs = [logs_output]
     )
     submit_btn.click(
