@@ -52,4 +52,4 @@ def index():
   return html
 
 if __name__ == "__main__":
-  app.run(port = configs.viewer_service_port)
+  app.run(host = configs.service_host, port = configs.viewer_service_port)
