@@ -115,7 +115,7 @@ def create_interface(manager):
 
       with gr.Column(scale = 2):
         with gr.Tab('submit') as submit_tab:
-          gr.Column():
+          with gr.Column():
             gr.Markdown('### Submit New Task')
             with gr.Row():
               fasta_file = gr.File(label = "FASTA file")
@@ -145,7 +145,7 @@ def create_interface(manager):
             status_output = gr.Textbox(label = 'submit status', interactive = False)
 
         with gr.Tab('view') as view_tab:
-          gr.Column():
+          with gr.Column():
             gr.Markdown('### Prediction Viewer')
 
 
