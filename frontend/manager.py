@@ -197,7 +197,7 @@ def create_interface(manager):
           names.append(join(output_dir, f))
       return gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False, value = [[rank, name] for rank, name in zip(ranks, names)])
     def refresh_visualization(evt: gr.SelectData):
-      selected_row = env.value
+      selected_row = evt.value
       path = selected_row['path']
       with open(path, 'r') as f:
         pdb_content = f.read()
