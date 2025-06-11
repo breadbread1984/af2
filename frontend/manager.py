@@ -153,7 +153,8 @@ def create_interface(manager):
               label = 'GPU selection',
               value = list(manager.processes.keys())[0] if len(manager.processes) else None
             )
-            results = gr.Dataframe(headers = ['rank', 'name(click to view)'], datatype = ['str', 'html'], interactive = False)
+            html = gr.HTML(label = '3D structure visualization')
+            results = gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False)
     # 2) callbacks
     def update_status():
       status_dict = manager.get_gpu_status()
@@ -193,8 +194,32 @@ def create_interface(manager):
           res = re.match(pattern, stem)
           if res is None: continue
           ranks.append(res[1])
-          names.append(f'<a href="http://localhost:8081?path={join(output_dir, f)}" target="_blank">{stem}</a>')
-      return gr.Dataframe(headers = ['rank', 'name(click to view)'], datatype = ['str', 'html'], interactive = False, value = [[rank, name] for rank, name in zip(ranks, names)])
+          names.append(join(output_dir, f))
+      return gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False, value = [[rank, name] for rank, name in zip(ranks, names)])
+    def refresh_visualization(evt: gr.SelectData):
+      selected_row = env.value
+      path = selected_row['path']
+      with open(path, 'r') as f:
+        pdb_content = f.read()
+      html = f"""<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/ngl@latest/dist/ngl.js"></script>
+  </head>
+  <body>
+    <script>
+      var stage = new NGL.Stage("viewport");
+      var pdbString = "{pdb_content}"
+      stage.loadFile(
+        new Blob([pdbString], {{ type: 'text/plain' }}),
+        {{ ext: "pdb", defaultRepresentation: true }}
+      ).then(function(comp) {{
+        comp.autoView();
+      }}).catch(err => alert("加载失败：" + err));
+    </script>
+  </body>
+</html>"""
+      return html
     # 3) events
     gpu_status_tab.select(
       update_status,
@@ -230,6 +255,11 @@ def create_interface(manager):
       update_status,
       inputs = None,
       outputs = list(gpu_status_outputs.values())
+    )
+    results.select(
+      refresh_visualization,
+      inputs = None,
+      outputs = html
     )
   return interface
 
