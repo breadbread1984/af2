@@ -87,7 +87,7 @@ def create_interface(manager):
   with gr.Blocks(title = "AlphaFold2 manager") as interface:
     gr.Markdown("# AlphaFold manager tools")
     with gr.Row():
-      with gr.Column(scale = 1)
+      with gr.Column(scale = 1):
         with gr.Tab('gpu status') as gpu_status_tab:
           with gr.Column():
 
