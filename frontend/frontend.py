@@ -178,4 +178,14 @@ def create_interface(manager):
   return interface
 
 def main(unused_argv):
-  
+  manager = AlphaFoldManager(FLAGS.num_gpus)
+  interface = create_interface(manager)
+  interface.launch(
+    server_name = configs.service_host,
+    server_port = configs.service_port,
+    share = True
+  )
+
+if __name__ == "__main__":
+  add_options()
+  app.run(main)
