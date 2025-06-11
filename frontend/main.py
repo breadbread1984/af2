@@ -20,7 +20,7 @@ class AlphaFoldManager(object):
     self.logs = {gpu_id: [] for gpu_id in range(num_gpus)}
     self.lock = threading.Lock()
     # start monitor thread
-    self.monitor_thread = threading.Thread(target = self._moniter_processes, deamon = True)
+    self.monitor_thread = threading.Thread(target = self._monitor_processes, deamon = True)
     self.monitor_thread.start()
   def _monitor_processes(self):
     while True:
