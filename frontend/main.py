@@ -101,7 +101,7 @@ def create_interface(manager):
           value = list(manager.logs.keys())[0] if len(manager.logs) else None
         )
         logs_output = gr.Textbox(label = 'logs', lines = 10, interactive = False)
-        get_logts_btn = gr.Button("get log")
+        get_logs_btn = gr.Button("get log")
 
       with gr.Column(scale = 2):
         gr.Markdown('### submit new task')
