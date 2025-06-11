@@ -147,8 +147,9 @@ def create_interface(manager):
       import tempfile
       temp_dir = tempfile.mkdtemp()
       fasta_path = join(temp_dir, "input.fasta")
-      with open(fasta_path, 'wb') as f:
-        f.write(fasta_file.read())
+      with open(fasta_file.name, 'r') as ifs
+        with open(fasta_path, 'w') as ofs:
+          ofs.write(ifs.read())
       success, message = manager.run_alphafold(
         gpu_id = int(gpu_id),
         fasta_path = fasta_path,
