@@ -186,13 +186,14 @@ def create_interface(manager):
       output_dir = join(configs.output_dir, str(gpu_id), 'input')
       ranks = list()
       names = list()
-      for f in listdir(output_dir):
-        stem, ext = splitext(f)
-        if ext != '.pdb': continue
-        res = re.match(pattern, stem)
-        if res is None: continue
-        ranks.append(res[1])
-        names.append(f'<a href="localhost:8081?path={join(output_dir, f)}" target="_blank">{stem}</a>')
+      if exists(output_dir):
+        for f in listdir(output_dir):
+          stem, ext = splitext(f)
+          if ext != '.pdb': continue
+          res = re.match(pattern, stem)
+          if res is None: continue
+          ranks.append(res[1])
+          names.append(f'<a href="http://localhost:8081?path={join(output_dir, f)}" target="_blank">{stem}</a>')
       return pd.DataFrame({'rank': ranks, 'name': names})
     # 3) events
     gpu_status_tab.select(
