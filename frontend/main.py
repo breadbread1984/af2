@@ -87,56 +87,67 @@ def create_interface(manager):
   with gr.Blocks(title = "AlphaFold2 manager") as interface:
     gr.Markdown("# AlphaFold manager tools")
     with gr.Row():
-      with gr.Column(scale = 1):
+      with gr.Column(scale = 1)
+        with gr.Tab('gpu status') as gpu_status_tab:
+          with gr.Column():
 
-        gr.Markdown('### GPU status')
-        gpu_status_outputs = {}
-        for gpu_id in manager.status:
-          with gr.Row():
-            gpu_status_outputs[gpu_id] = gr.Textbox(
-              label = f"GPU {gpu_id}",
-              value = f"status: intializing",
-              interactive = False
+            gr.Markdown('### GPU status')
+            gpu_status_outputs = {}
+            for gpu_id in manager.status:
+              with gr.Row():
+                gpu_status_outputs[gpu_id] = gr.Textbox(
+                  label = f"GPU {gpu_id}",
+                  value = f"status: intializing",
+                  interactive = False
+                )
+            refresh_btn = gr.Button("refresh status")
+
+        with gr.Tab('gpu logs') as gpu_logs_tab:
+          with gr.Column():
+            gr.Markdown('### GPU logs')
+            gpu_id_input = gr.Dropdown(
+              choices = list(manager.logs.keys()),
+              label = 'GPU selection',
+              value = list(manager.logs.keys())[0] if len(manager.logs) else None
             )
-        refresh_btn = gr.Button("refresh status")
-
-        gr.Markdown('### GPU logs')
-        gpu_id_input = gr.Dropdown(
-          choices = list(manager.logs.keys()),
-          label = 'GPU selection',
-          value = list(manager.logs.keys())[0] if len(manager.logs) else None
-        )
-        logs_output = gr.Textbox(label = 'logs', lines = 10, interactive = False)
-        get_logs_btn = gr.Button("get log")
+            logs_output = gr.Textbox(label = 'logs', lines = 10, interactive = False)
+            get_logs_btn = gr.Button("get log")
 
       with gr.Column(scale = 2):
-        gr.Markdown('### submit new task')
-        with gr.Row():
-          fasta_file = gr.File(label = "FASTA file")
-          gpu_selector = gr.Dropdown(
-            choices = list(manager.processes.keys()),
-            label = 'GPU selection',
-            value = list(manager.processes.keys())[0] if len(manager.processes) else None
-          )
-        with gr.Row():
-          model_preset = gr.Dropdown(
-            choices = ['monomer', 'monomer_casp14', 'monomer_ptm', 'multimer'],
-            label = 'preset model',
-            value = 'multimer'
-          )
-          models_to_relax = gr.Dropdown(
-            choices = ['all', 'best', 'none'],
-            label = 'models to relax',
-            value = 'none'
-          )
-        with gr.Row():
-          max_template_date = gr.Textbox(
-            label = 'max template date',
-            value = '2020-05-14',
-            placeholder = 'YYY-MM-DD'
-          )
-        submit_btn = gr.Button('submit prediction')
-        status_output = gr.Textbox(label = 'submit status', interactive = False)
+        with gr.Tab('submit') as submit_tab:
+          gr.Column():
+            gr.Markdown('### Submit New Task')
+            with gr.Row():
+              fasta_file = gr.File(label = "FASTA file")
+              gpu_selector = gr.Dropdown(
+                choices = list(manager.processes.keys()),
+                label = 'GPU selection',
+                value = list(manager.processes.keys())[0] if len(manager.processes) else None
+              )
+            with gr.Row():
+              model_preset = gr.Dropdown(
+                choices = ['monomer', 'monomer_casp14', 'monomer_ptm', 'multimer'],
+                label = 'preset model',
+                value = 'multimer'
+              )
+              models_to_relax = gr.Dropdown(
+                choices = ['all', 'best', 'none'],
+                label = 'models to relax',
+                value = 'none'
+              )
+            with gr.Row():
+              max_template_date = gr.Textbox(
+                label = 'max template date',
+                value = '2020-05-14',
+                placeholder = 'YYY-MM-DD'
+              )
+            submit_btn = gr.Button('submit prediction')
+            status_output = gr.Textbox(label = 'submit status', interactive = False)
+
+        with gr.Tab('view') as view_tab:
+          gr.Column():
+            gr.Markdown('### Prediction Viewer')
+
 
     def update_status():
       status_dict = manager.get_gpu_status()
@@ -169,7 +180,17 @@ def create_interface(manager):
       inputs = [],
       outputs = list(gpu_status_outputs.values())
     )
+    gpu_status_tab.select(
+      update_status,
+      inputs = [],
+      outputs = list(gpu_status_outputs.values())
+    )
     get_logs_btn.click(
+      update_logs,
+      inputs = [gpu_id_input],
+      outputs = [logs_output]
+    )
+    gpu_logs_tab.select(
       update_logs,
       inputs = [gpu_id_input],
       outputs = [logs_output]
