@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from os.path import join
+from shutil import rmtree
+from os import makedirs
+from os.path import join, exists
 from datetime import datetime
 import threading
 import subprocess
@@ -43,6 +45,9 @@ class AlphaFoldManager(object):
     if self.status[gpu_id] != 'idle':
       return False, f"GPU {gpu_id} is busy, status: {self.status[gpu_id]}"
     try:
+      if exists(join(configs.output_dir, str(gpu_id))):
+        rmtree(join(configs.output_dir, str(gpu_id)))
+      makedirs(join(configs.output_dir, str(gpu_id)))
       process = subprocess.Popen(
         [
           'python3',
