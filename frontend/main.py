@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
+from os.path import join
 from datetime import datetime
 import threading
 import subprocess
@@ -145,7 +146,7 @@ def create_interface(manager):
         return "error: please upload fasta file"
       import tempfile
       temp_dir = tempfile.mkdtemp()
-      fasta_path = os.path.join(temp_dir, "input.fasta")
+      fasta_path = join(temp_dir, "input.fasta")
       with open(fasta_path, 'wb') as f:
         f.write(fasta_file.read())
       success, message = manager.run_alphafold(
