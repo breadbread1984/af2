@@ -35,7 +35,7 @@ class AlphaFoldManager(object):
               self.logs[gpu_id].append(f"{datetime.now()}: process finished, status {status}")
               self.processes[gpu_id] = None
       time.sleep(5)
-  def run_alphafold(self, gpu_id, fasta_path):
+  def run_alphafold(self, gpu_id, fasta_path, model_preset = "multimer", models_to_relax = 'none', max_template_date = '2020-05-14'):
     if gpu_id not in self.processes:
       return False, f"invalid GPU ID: {gpu_id}"
     if self.status[gpu_id] != 'idle':
@@ -46,14 +46,14 @@ class AlphaFoldManager(object):
           'python3',
           'docker/run_docker.py',
           f'--fasta_paths={fasta_path}',
-          '--max_template_date=2020-05-14',
-          '--model_preset=multimer',
+          '--max_template_date={max_template_date}',
+          '--model_preset={model_preset}',
           '--db_preset=reduced_dbs',
           f'--data_dir={configs.data_dir}',
           f'--output_dir={join(configs.output_dir, str(gpu_id))}',
           '--use_gpu',
           '--enable_gpu_relax',
-          '--models_to_relax=none',
+          '--models_to_relax={models_to_relax}',
           f'--gpu_devices={gpu_id}',
         ]
       )
@@ -75,6 +75,61 @@ class AlphaFoldManager(object):
     if gpu_id in self.logs:
       return '\n'.join(self.logs[gpu_id])
     return "no log"
+
+def create_interface(manager):
+  with gr.Blocks(title = "AlphaFold2 manager") as interface:
+    gr.Markdown("# AlphaFold manager tools")
+    with gr.Row():
+      with gr.Column(scale = 1):
+
+        gr.Markdown('### GPU status')
+        gpu_status_outputs = {}
+        for gpu_id in manager.status:
+          with gr.Row():
+            gpu_status_outputs[gpu_id] = gr.Textbox(
+              label = f"GPU {gpu_id}",
+              value = f"status: intializing",
+              interactive = False
+            )
+        refresh_btn = gr.Button("refresh status")
+
+        gr.Markdown('### GPU logs')
+        gpu_id_input = gr.Dropdown(
+          choices = list(manager.logs.keys()),
+          label = 'GPU selection',
+          value = list(manager.logs.keys())[0] if len(manager.logs) else None
+        )
+        logs_output = gr.Textbox(label = 'logs', lines = 10, interactive = False)
+        get_logts_btn = gr.Button("get log")
+
+      with gr.Column(scale = 2):
+        gr.Markdown('### submit new task')
+        with gr.Row():
+          fasta_file = gr.File(label = "FASTA file")
+          gpu_selector = gr.Dropdown(
+            choices = list(manager.processes.keys()),
+            label = 'GPU selection',
+            value = list(manager.processes.keys())[0] if len(manager.processes) else None
+          )
+        with gr.Row():
+          model_preset = gr.Dropdown(
+            choices = ['monomer', 'monomer_casp14', 'monomer_ptm', 'multimer'],
+            label = 'preset model',
+            value = 'multimer'
+          )
+          models_to_relax = gr.Dropdown(
+            choices = ['all', 'best', 'none'],
+            label = 'models to relax',
+            value = 'none'
+          )
+        with gr.Row():
+          max_template_date = gr.Textbox(
+            label = 'max template date',
+            value = '2020-05-14',
+            placeholder = 'YYY-MM-DD'
+          )
+        submit_btn = gr.Button('submit prediction')
+        status_output = gr.Textbox(label = 'submit status', interactive = False)
 
 def main(unused_argv):
   
