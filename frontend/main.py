@@ -141,7 +141,7 @@ def create_interface(manager):
       }
     def update_logs(gpu_id):
       return manager.get_gpu_logs(gpu_id)
-    def run_prediction(gpu_id, fasta_path,  model_preset, models_to_relax, max_template_date):
+    def run_prediction(gpu_id, fasta_file, model_preset, models_to_relax, max_template_date):
       if fasta_file is None:
         return "error: please upload fasta file"
       import tempfile
