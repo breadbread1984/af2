@@ -16,7 +16,7 @@ def add_options():
 class AlphaFoldManager(object):
   def __init__(self, num_gpus):
     self.processes = {gpu_id: None for gpu_id in range(num_gpus)}
-    self.status = {gpu_id: "idle", for gpu_id in range(num_gpus)}
+    self.status = {gpu_id: "idle" for gpu_id in range(num_gpus)}
     self.logs = {gpu_id: [] for gpu_id in range(num_gpus)}
     self.lock = threading.Lock()
     # start monitor thread
