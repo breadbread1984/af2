@@ -194,7 +194,7 @@ def create_interface(manager):
           if res is None: continue
           ranks.append(res[1])
           names.append(f'<a href="http://localhost:8081?path={join(output_dir, f)}" target="_blank">{stem}</a>')
-      return pd.DataFrame({'rank': ranks, 'name(click to view)': names})
+      return gr.Dataframe(headers = ['rank', 'name(click to view)'], datatype = ['str', 'html'], interactive = False, value = [ranks, names])
     # 3) events
     gpu_status_tab.select(
       update_status,
