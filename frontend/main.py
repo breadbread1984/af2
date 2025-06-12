@@ -199,9 +199,7 @@ def create_interface(manager):
     def refresh_visualization(df, evt: gr.SelectData):
       row_index = evt.index[0]
       clicked_row_values = evt.row_value
-      path = clicked_row_values[1]
-      with open(path, 'r') as f:
-        pdb_content = f.read()
+      pdb_path = clicked_row_values[1]
       html = f"""
         <!DOCTYPE html>
         <html>
@@ -219,31 +217,7 @@ def create_interface(manager):
             <script>
                 // 创建查看器实例
                 var stage = new NGL.Stage("viewport");
-                
-                // 定义加载PDB内容的函数
-                function loadPdbContent(content) {{
-                    // 清除现有结构
-                    stage.removeAllComponents();
-                    
-                    // 从字符串加载PDB数据
-                    var structure = NGL.autoLoad(content, {{
-                        ext: "pdb",
-                        name: "protein"
-                    }});
-                    
-                    // 添加结构到查看器
-                    stage.loadFile(structure).then(function(component) {{
-                        // 设置渲染表示
-                        component.addRepresentation("cartoon");
-                        component.addRepresentation("ball+stick", {{ sele: "hetero" }});
-                        
-                        // 自动调整视图
-                        stage.autoView();
-                    }});
-                }}
-                
-                // 加载PDB内容
-                loadPdbContent(`{pdb_content}`);
+                stage.loadFile('{pdb_path}', {{ext: 'pdb'}})
             </script>
         </body>
         </html>
