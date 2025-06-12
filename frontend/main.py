@@ -199,7 +199,7 @@ def create_interface(manager):
     def refresh_visualization(df, evt: gr.SelectData):
       row_index = evt.index[0]
       clicked_row_values = evt.row_value
-      path = clicked_row_values['path']
+      path = clicked_row_values[1]
       with open(path, 'r') as f:
         pdb_content = f.read()
       html = f"""<!DOCTYPE html>
