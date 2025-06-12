@@ -202,26 +202,52 @@ def create_interface(manager):
       path = clicked_row_values[1]
       with open(path, 'r') as f:
         pdb_content = f.read()
-      html = f"""<!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://unpkg.com/ngl@latest/dist/ngl.js"></script>
-  </head>
-  <body>
-    <script>
-      var stage = new NGL.Stage("viewport");
-      var pdbString = "{pdb_content}"
-      stage.loadFile(
-        new Blob([pdbString], {{ type: 'text/plain' }}),
-        {{ ext: "pdb", defaultRepresentation: true }}
-      ).then(function(comp) {{
-        comp.autoView();
-      }}).catch(err => alert("加载失败：" + err));
-    </script>
-  </body>
-</html>"""
-      with open('debug.html', 'w') as f:
-        f.write(html)
+      html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>NGL Viewer</title>
+            <!-- 引入NGL Viewer库 -->
+            <script src="https://cdn.jsdelivr.net/npm/ngl@0.10.4/dist/ngl.js"></script>
+            <style>
+                #viewport {{ width: 100%; height: 500px; }}
+            </style>
+        </head>
+        <body>
+            <div id="viewport"></div>
+            <script>
+                // 创建查看器实例
+                var stage = new NGL.Stage("viewport");
+                
+                // 定义加载PDB内容的函数
+                function loadPdbContent(content) {{
+                    // 清除现有结构
+                    stage.removeAllComponents();
+                    
+                    // 从字符串加载PDB数据
+                    var structure = NGL.autoLoad(content, {{
+                        ext: "pdb",
+                        name: "protein"
+                    }});
+                    
+                    // 添加结构到查看器
+                    stage.loadFile(structure).then(function(component) {{
+                        // 设置渲染表示
+                        component.addRepresentation("cartoon");
+                        component.addRepresentation("ball+stick", {{ sele: "hetero" }});
+                        
+                        // 自动调整视图
+                        stage.autoView();
+                    }});
+                }}
+                
+                // 加载PDB内容
+                loadPdbContent(`{pdb_content}`);
+            </script>
+        </body>
+        </html>
+        """
       return html
     # 3) events
     gpu_status_tab.select(
