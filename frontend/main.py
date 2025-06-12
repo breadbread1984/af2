@@ -153,7 +153,7 @@ def create_interface(manager):
               label = 'GPU selection',
               value = list(manager.processes.keys())[0] if len(manager.processes) else None
             )
-            html = gr.HTML(label = '3D structure visualization')
+            html = gr.Blocks()
             results = gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False)
     # 2) callbacks
     def update_status():
@@ -226,7 +226,7 @@ def create_interface(manager):
         </body>
     </html>
         """
-      return html
+      return gr.Blocks(js = html)
     # 3) events
     gpu_status_tab.select(
       update_status,
