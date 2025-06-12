@@ -200,9 +200,10 @@ def create_interface(manager):
       row_index = evt.index[0]
       clicked_row_values = evt.row_value
       pdb_path = clicked_row_values[1]
-      html = f"""
-        <!DOCTYPE html>
-        <html>
+      with open(pdb_path, 'r') as f:
+        pdb_content = f.read()
+      html = f"""<!DOCTYPE html>
+    <html>
         <head>
             <meta charset="utf-8">
             <title>NGL Viewer</title>
@@ -217,10 +218,13 @@ def create_interface(manager):
             <script>
                 // 创建查看器实例
                 var stage = new NGL.Stage("viewport");
-                stage.loadFile('{pdb_path}', {{ext: 'pdb'}})
+                content = `{pdb_content}`;
+                // 定义加载PDB内容的函数
+                var stringBlob = new Blob([content], {{type: 'text/plain'}});
+                stage.loadFile(stringBlob, {{ext: "pdb", defaultRepresentation: true}});
             </script>
         </body>
-        </html>
+    </html>
         """
       return html
     # 3) events
