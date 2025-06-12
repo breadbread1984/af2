@@ -220,6 +220,8 @@ def create_interface(manager):
     </script>
   </body>
 </html>"""
+      with open('debug.html', 'w') as f:
+        f.write(html)
       return html
     # 3) events
     gpu_status_tab.select(
