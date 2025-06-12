@@ -196,7 +196,7 @@ def create_interface(manager):
           ranks.append(res[1])
           names.append(join(output_dir, f))
       return gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False, value = [[rank, name] for rank, name in zip(ranks, names)])
-  def refresh_visualization(df, evt: gr.SelectData):
+    def refresh_visualization(df, evt: gr.SelectData):
       row_index = evt.index[0]
       clicked_row_values = evt.row_value
       path = clicked_row_values['path']
@@ -260,7 +260,7 @@ def create_interface(manager):
     results.select(
       refresh_visualization,
       inputs = [results],
-      outputs = [html]
+      outputs = html
     )
   return interface
 
