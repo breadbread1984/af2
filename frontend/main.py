@@ -196,9 +196,9 @@ def create_interface(manager):
           ranks.append(res[1])
           names.append(join(output_dir, f))
       return gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False, value = [[rank, name] for rank, name in zip(ranks, names)])
-    def refresh_visualization(evt: gr.SelectData):
-      selected_row = evt.value
-      path = selected_row['path']
+    def refresh_visualization(selected_row):
+      row = results.iloc[selected_row].to_dict()
+      path = row['path']
       with open(path, 'r') as f:
         pdb_content = f.read()
       html = f"""<!DOCTYPE html>
