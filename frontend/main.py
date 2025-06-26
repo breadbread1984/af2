@@ -236,17 +236,15 @@ def create_interface(manager):
       # dummy callback
       pass
     js_openwindows = """
-    <html>
-      <head></head>
-      <body>
-        <script>
-          function loadLocalHtml() {
-            window.open('file://selected.html', '_blank');
-          }
-          loadLocalHtml()
-        </script>
-      </body>
-    </html>
+    () => {
+        // 创建新窗口
+        const newWindow = window.open('', '_blank');
+        fetch('selected.html')
+          .then(response => response.text())
+          .then(content => {
+             newWindow.document.write(content);
+          });
+        return true;
     """
     # 3) events
     gpu_status_tab.select(
