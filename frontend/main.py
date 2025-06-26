@@ -290,7 +290,7 @@ def create_interface(manager):
       outputs = [download]
     )
     view_btn.click(
-      py_openwindows,
+      fn = py_openwindows,
       inputs = None,
       outputs = None,
       js = js_openwindows
