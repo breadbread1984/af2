@@ -238,13 +238,9 @@ def create_interface(manager):
     js_openwindows = """
     () => {
         // 创建新窗口
-        const newWindow = window.open('', '_blank');
-        fetch('selected.html')
-          .then(response => response.text())
-          .then(content => {
-             newWindow.document.write(content);
-          });
+        window.open('selected.html', '_blank');
         return true;
+    }
     """
     # 3) events
     gpu_status_tab.select(
