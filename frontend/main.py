@@ -303,9 +303,9 @@ def main(unused_argv):
   manager = AlphaFoldManager(FLAGS.num_gpus)
   interface = create_interface(manager)
   interface = mount_gradio_app(app, interface, path = "/")
-  interface.launch(
-    server_name = configs.service_host,
-    server_port = configs.manager_service_port,
+  interface.run(
+    host = configs.service_host,
+    port = configs.manager_service_port,
     share = True
   )
 
