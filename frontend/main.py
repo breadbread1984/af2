@@ -11,6 +11,7 @@ import threading
 import subprocess
 import time
 import gradio as gr
+from flask import Flask, send_from_directory
 import configs
 
 FLAGS = flags.FLAGS
@@ -238,7 +239,7 @@ def create_interface(manager):
     js_openwindows = """
     () => {
         // 创建新窗口
-        window.open('selected.html', '_blank');
+        window.open('/selected.html', '_blank');
         return true;
     }
     """
@@ -291,9 +292,16 @@ def create_interface(manager):
     )
   return interface
 
+app = Flask(__name__)
+
+@app.route("/selected.html")
+def selected():
+  return send_from_directory(".", "selected.html")
+
 def main(unused_argv):
   manager = AlphaFoldManager(FLAGS.num_gpus)
   interface = create_interface(manager)
+  interface = mount_gradio_app(app, interface, path = "/")
   interface.launch(
     server_name = configs.service_host,
     server_port = configs.manager_service_port,
