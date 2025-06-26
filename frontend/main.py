@@ -154,8 +154,8 @@ def create_interface(manager):
               value = list(manager.processes.keys())[0] if len(manager.processes) else None
             )
             with gr.Row():
-              download = gr.File('download')
-              view_btn = gr.Button('visualize')
+              download = gr.File(label = 'download')
+              view_btn = gr.Button(label = 'visualize')
             results = gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False)
     # 2) callbacks
     def update_status():
