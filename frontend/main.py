@@ -155,7 +155,7 @@ def create_interface(manager):
             )
             with gr.Row():
               download = gr.File(label = 'download')
-              view_btn = gr.Button(label = 'visualize')
+              view_btn = gr.Button(value = 'visualize')
             results = gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False)
     # 2) callbacks
     def update_status():
