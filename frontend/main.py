@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from absl import flags, app
-from shutil import rmtree
+from shutil import rmtree, copyfile
 from os import makedirs, listdir
 from os.path import join, exists, splitext
 import re
@@ -153,7 +153,9 @@ def create_interface(manager):
               label = 'GPU selection',
               value = list(manager.processes.keys())[0] if len(manager.processes) else None
             )
-            html = gr.HTML(label = '3D structure visualization')
+            with gr.Row():
+              download = gr.File('download')
+              view_btn = gr.Button('visualize')
             results = gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False)
     # 2) callbacks
     def update_status():
@@ -196,12 +198,13 @@ def create_interface(manager):
           ranks.append(res[1])
           names.append(join(output_dir, f))
       return gr.Dataframe(headers = ['rank', 'path'], datatype = ['str', 'str'], interactive = False, value = [[rank, name] for rank, name in zip(ranks, names)])
-    def refresh_visualization(df, evt: gr.SelectData):
+    def prepare_files(df, evt: gr.SelectData):
       row_index = evt.index[0]
       clicked_row_values = evt.row_value
       pdb_path = clicked_row_values[1]
       with open(pdb_path, 'r') as f:
         pdb_content = f.read()
+      copyfile(pdb_path, 'selected.pdb')
       html = f"""<!DOCTYPE html>
     <html>
         <head>
@@ -226,7 +229,25 @@ def create_interface(manager):
         </body>
     </html>
         """
-      return html
+      with open('selected.html', 'w') as f:
+        f.write(html)
+      return 'selected.pdb'
+    def py_openwindows():
+      # dummy callback
+      pass
+    js_openwindows = """
+    <html>
+      <head></head>
+      <body>
+        <script>
+          function loadLocalHtml() {
+            window.open('file://selected.html', '_blank');
+          }
+          loadLocalHtml()
+        </script>
+      </body>
+    </html>
+    """
     # 3) events
     gpu_status_tab.select(
       update_status,
@@ -264,9 +285,15 @@ def create_interface(manager):
       outputs = list(gpu_status_outputs.values())
     )
     results.select(
-      refresh_visualization,
+      prepare_files,
       inputs = [results],
-      outputs = html
+      outputs = [download]
+    )
+    view_btn.click(
+      py_openwindows,
+      inputs = None,
+      outputs = None,
+      js = js_openwindows
     )
   return interface
 
