@@ -11,6 +11,7 @@ import threading
 import subprocess
 import time
 import gradio as gr
+from gradio.routes import mount_gradio_app
 from flask import Flask, send_from_directory
 import configs
 
