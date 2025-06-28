@@ -302,8 +302,8 @@ def selected():
 def main(unused_argv):
   manager = AlphaFoldManager(FLAGS.num_gpus)
   interface = create_interface(manager)
-  app = mount_gradio_app(app, interface, path = "/")
-  app.run(
+  application = mount_gradio_app(app, interface, path = "/")
+  application.run(
     host = configs.service_host,
     port = configs.manager_service_port
   )
