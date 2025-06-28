@@ -293,16 +293,16 @@ def create_interface(manager):
     )
   return interface
 
-app = Flask(__name__)
+application = Flask(__name__)
 
-@app.route("/selected.html")
+@application.route("/selected.html")
 def selected():
   return send_from_directory(".", "selected.html")
 
 def main(unused_argv):
   manager = AlphaFoldManager(FLAGS.num_gpus)
   interface = create_interface(manager)
-  application = mount_gradio_app(app, interface, path = "/")
+  application = mount_gradio_app(application, interface, path = "/")
   application.run(
     host = configs.service_host,
     port = configs.manager_service_port
