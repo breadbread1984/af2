@@ -12,7 +12,8 @@ import subprocess
 import time
 import gradio as gr
 from gradio.routes import mount_gradio_app
-from flask import Flask, send_from_directory
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
 import configs
 
 FLAGS = flags.FLAGS
@@ -293,17 +294,20 @@ def create_interface(manager):
     )
   return interface
 
-application = Flask(__name__)
+application = FastAPI()
 
-@application.route("/selected.html")
+@application.get("/selected.html")
 def selected():
-  return send_from_directory(".", "selected.html")
+  return FileResponse("selected.html")
 
 def main(unused_argv):
+  global application
+  import uvicorn
   manager = AlphaFoldManager(FLAGS.num_gpus)
   interface = create_interface(manager)
-  application = mount_gradio_app(application, interface, path = "/")
-  application.run(
+  application = mount_gradio_app(app = application, blocks = interface, path = "/")
+  uvicorn.run(
+    application,
     host = configs.service_host,
     port = configs.manager_service_port
   )
